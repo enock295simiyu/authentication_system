@@ -38,7 +38,7 @@ class User:
         if not user:
             with open(self.authentication_csv_file_location, 'a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow([self.username, self.password])
+                writer.writerow(['', self.username, self.password])
             return True, user
         else:
             return False, user

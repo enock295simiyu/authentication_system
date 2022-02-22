@@ -37,7 +37,7 @@ class Authentication:
         self.login_screen = None
         self.registration_screen = None
         self.authentication_window = Tk()
-        self.authentication_window_geometry = '800x600'
+        self.authentication_window_geometry = '1000x800'
         self.username = None
         self.password = None
         self.password1 = None
@@ -76,10 +76,6 @@ class Authentication:
         password_label.pack()
         self.password_entry = Entry(self.registration_screen, textvariable=self.password, show='*')
         self.password_entry.pack()
-        password1_label = Label(self.registration_screen, text="Re-Password *")
-        password1_label.pack()
-        password1_entry = Entry(self.registration_screen, textvariable=self.password1, show='*')
-        password1_entry.pack()
         Label(self.registration_screen, text="").pack()
         Button(self.registration_screen, text="Register", command=self.register_user, width=10, height=1,
                bg="blue").pack()
@@ -87,11 +83,8 @@ class Authentication:
     def register_user(self):
         username_info = self.username.get()
         password_info = self.password.get()
-        password_info1 = self.password1.get()
         self.user.username = username_info
-        self.user.password = password_info1
-        if password_info1 != password_info:
-            pass
+        self.user.password = password_info
         user_created, self.user = self.user.save()
         self.username_entry.delete(0, END)
         self.password_entry.delete(0, END)
@@ -144,7 +137,7 @@ class Authentication:
         self.user_logged_in_successfully_screen.geometry("800x100")
         Label(self.user_logged_in_successfully_screen, text="Click the button below to view the main content page"
               ).pack()
-        Button(self.user_created_successfully_screen, text="Main Page", ).pack()
+        Button(self.user_logged_in_successfully_screen, text="Main Page", ).pack()
 
     def user_failed_to_login(self):
         self.user_failed_to_login_screen = Toplevel(self.registration_screen)
@@ -157,8 +150,7 @@ class Authentication:
     def login_user(self):
         self.username = self.username_verify.get()
         self.password = self.password_verify.get()
-        self.user.username = self.username
-        self.user.password = self.password
+        self.user = User(self.username, self.password)
         user_available = self.user.check_if_user_is_already_saved()
         has_login = False
         if user_available:
@@ -229,27 +221,24 @@ class Authentication:
     def render_main_page(self):
         self.clear_landing_page()
         self.authentication_window.title('Main Content')
-        self.font_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="2",
+        self.font_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="1",
                                 font=("Calibri", 13))
         self.font_title.pack()
-        Label(text="").pack()
         scale = Scale(self.authentication_window, orient=HORIZONTAL, length=300, width=20, sliderlength=10, from_=10,
                       to=50,
                       tickinterval=5, command=self.change_font_size)
         scale.pack()
         self.download_files_title = Label(text="Downloads", bg="blue", fg='white',
-                                          width="300", height="2", font=("Calibri", 13))
+                                          width="300", height="1", font=("Calibri", 13))
         self.download_files_title.pack()
         self.download_files_success = Label(bg="yellow", fg='black',
-                                            width="300", height="2", font=("Calibri", 13))
+                                            width="300", height="1", font=("Calibri", 13))
         self.download_files_success.pack()
-        self.download_button = Button(text="Download File", height="2", width="30", command=self.download_file)
+        self.download_button = Button(text="Download File", height="1", width="30", command=self.download_file)
         self.download_button.pack()
         self.material_title = Label(text="List of the best python learning websites", bg="blue", fg='white',
-                                    width="300", height="2", font=("Calibri", 13))
+                                    width="300", height="1", font=("Calibri", 13))
         self.material_title.pack()
-        Label(text="").pack()
-
         self.link1 = Label(self.authentication_window, text="Google", fg="blue", font=("Calibri", 13), cursor="hand2")
         self.link1.pack()
         self.link1.bind("<Button-1>", lambda e: self.callback("https://www.google.com"))
@@ -267,7 +256,7 @@ class Authentication:
         self.link5 = Label(self.authentication_window, text="Coursera", fg="blue", font=("Calibri", 13), cursor="hand2")
         self.link5.pack()
         self.link5.bind("<Button-1>", lambda e: self.callback("https://www.coursera.org/"))
-        self.change_color_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="2",
+        self.change_color_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="1",
                                         font=("Calibri", 13))
         self.change_color_title.pack()
         self.chosen_color = StringVar()
@@ -275,9 +264,8 @@ class Authentication:
         self.color_dropdown = OptionMenu(self.authentication_window, self.chosen_color, *self.color_options,
                                          command=self.change_background_color)
         self.color_dropdown.pack()
-        self.logout_button = Button(text="Logout", height="2", width="30", command=self.logout_page)
+        self.logout_button = Button(text="Logout", height="1", width="30", command=self.logout_page)
         self.logout_button.pack()
-        Label(text="").pack()
         self.add_input_button = Button(text="Add Input", height="1", width="30", command=self.add_input)
         self.add_input_button.pack()
         self.remove_input_button = Button(text="Remove Input", height="1", width="30", command=self.romove_input)
