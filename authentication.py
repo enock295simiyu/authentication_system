@@ -8,6 +8,7 @@ from database import User
 
 class Authentication:
     def __init__(self):
+        self.logout_button = None
         self.download_files_success = None
         self.download_files_title = None
         self.change_color_title = None
@@ -44,7 +45,8 @@ class Authentication:
     def create_base_authentication_window(self):
         self.authentication_window.title('Authentication System | Please Choose between login or register')
         self.authentication_window.geometry(self.authentication_window_geometry)
-        Label(text="Choose Login Or Register", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
+        Label(text="Choose Login Or Register", bg="blue", fg='white', width="300", height="2",
+              font=("Calibri", 13)).pack()
         Label(text="").pack()
         Button(text="Login", height="2", width="30", command=self.login_page).pack()
         Label(text="").pack()
@@ -181,6 +183,7 @@ class Authentication:
         self.download_files_title.configure(font=('Calibri', val))
         self.download_button.configure(font=('Calibri', val))
         self.download_files_success.configure(font=('Calibri', val))
+        self.logout_button.configure(font=('Calibri', val))
 
     def change_background_color(self, color):
         self.authentication_window.configure(bg=color)
@@ -211,10 +214,13 @@ class Authentication:
         except:
             self.download_files_success.configure(text='An Error occurred while downloading the file')
 
-    def clear_main_page(self):
+    def clear_landing_page(self):
         elements = self.authentication_window.pack_slaves()
         for l in elements:
             l.destroy()
+
+    def clear_main_page(self):
+        self.clear_landing_page()
         self.authentication_window.title('Main Content')
         self.font_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="2",
                                 font=("Calibri", 13))
@@ -262,3 +268,21 @@ class Authentication:
         self.color_dropdown = OptionMenu(self.authentication_window, self.chosen_color, *self.color_options,
                                          command=self.change_background_color)
         self.color_dropdown.pack()
+        self.logout_button = Button(text="Logout", height="2", width="30", command=self.logout_page)
+        self.logout_button.pack()
+        Label(text="").pack()
+
+    def logout_page(self):
+        self.logout_screen = Toplevel(self.authentication_window)
+        self.logout_screen.title("Logout")
+        self.logout_screen.geometry(self.authentication_window_geometry)
+        Label(self.logout_screen, text="Click the button below to logout").pack()
+        Label(self.logout_screen, text="").pack()
+        Button(self.logout_screen, text="Logout", width=10, height=1, command=self.logout_user).pack()
+
+    def logout_user(self):
+
+        Label(self.logout_screen, text="Logout was Success", fg="green", font=("calibri", 11)).pack()
+        self.logout_screen.destroy()
+        self.clear_landing_page()
+        self.create_base_authentication_window()
