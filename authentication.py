@@ -1,13 +1,18 @@
 import os
 import shutil
 import webbrowser
-from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, HORIZONTAL, OptionMenu
+from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, HORIZONTAL, OptionMenu, Scrollbar, \
+    VERTICAL, RIGHT, Y, BOTH, Canvas
 
 from database import User
 
 
 class Authentication:
     def __init__(self):
+        self.remove_input_button = None
+        self.add_input_button = None
+        self.input_add_frame = None
+        self.scrollbar = None
         self.logout_button = None
         self.download_files_success = None
         self.download_files_title = None
@@ -51,6 +56,8 @@ class Authentication:
         Button(text="Login", height="2", width="30", command=self.login_page).pack()
         Label(text="").pack()
         Button(text="Register", height="2", width="30", command=self.register_page).pack()
+        self.scrollbar = Scrollbar(self.authentication_window, orient=VERTICAL)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
 
     def register_page(self):
         self.registration_screen = Toplevel(self.authentication_window)
@@ -165,7 +172,7 @@ class Authentication:
         self.password_login_entry.delete(0, END)
         Label(self.login_screen, text="Login was Success", fg="green", font=("calibri", 11)).pack()
         self.login_screen.destroy()
-        self.clear_main_page()
+        self.render_main_page()
 
     def callback(self, url):
         webbrowser.open_new(url)
@@ -219,7 +226,7 @@ class Authentication:
         for l in elements:
             l.destroy()
 
-    def clear_main_page(self):
+    def render_main_page(self):
         self.clear_landing_page()
         self.authentication_window.title('Main Content')
         self.font_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="2",
@@ -271,6 +278,20 @@ class Authentication:
         self.logout_button = Button(text="Logout", height="2", width="30", command=self.logout_page)
         self.logout_button.pack()
         Label(text="").pack()
+        self.add_input_button = Button(text="Add Input", height="1", width="30", command=self.add_input)
+        self.add_input_button.pack()
+        self.remove_input_button = Button(text="Remove Input", height="1", width="30", command=self.romove_input)
+        self.remove_input_button.pack()
+        self.input_add_frame = Canvas(self.authentication_window)
+        self.input_add_frame.pack(fill=BOTH, expand=1)
+
+    def add_input(self):
+        self.entry = Entry(self.input_add_frame, textvariable=self.username)
+        self.entry.pack()
+
+    def romove_input(self):
+        for children in self.input_add_frame.pack_slaves():
+            children.destroy()
 
     def logout_page(self):
         self.logout_screen = Toplevel(self.authentication_window)
