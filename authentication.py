@@ -1,3 +1,5 @@
+import os
+import shutil
 import webbrowser
 from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, HORIZONTAL, OptionMenu
 
@@ -6,6 +8,9 @@ from database import User
 
 class Authentication:
     def __init__(self):
+        self.download_files_success = None
+        self.download_files_title = None
+        self.change_color_title = None
         self.chosen_color = None
         self.color_dropdown = None
         self.material_title = None
@@ -173,6 +178,9 @@ class Authentication:
         self.material_title.configure(font=('Calibri', val))
         self.color_dropdown.configure(font=('Calibri', val))
         self.change_color_title.configure(font=('Calibri', val))
+        self.download_files_title.configure(font=('Calibri', val))
+        self.download_button.configure(font=('Calibri', val))
+        self.download_files_success.configure(font=('Calibri', val))
 
     def change_background_color(self, color):
         self.authentication_window.configure(bg=color)
@@ -181,6 +189,27 @@ class Authentication:
         self.link3.configure(bg=color)
         self.link4.configure(bg=color)
         self.link5.configure(bg=color)
+
+    def get_download_path(self):
+        """Returns the default downloads path for linux or windows"""
+        if os.name == 'nt':
+            import winreg
+            sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+            downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
+                location = winreg.QueryValueEx(key, downloads_guid)[0]
+            return location
+        else:
+            return os.path.join(os.path.expanduser('~'), 'downloads')
+
+    def download_file(self):
+        try:
+            downloads_folder = self.get_download_path()
+            shutil.copy2('downloaded_file.txt', downloads_folder)
+            self.download_files_success.configure(text='File was downloaded successfully and has been saved to you '
+                                                       'downloads folder')
+        except:
+            self.download_files_success.configure(text='An Error occurred while downloading the file')
 
     def clear_main_page(self):
         elements = self.authentication_window.pack_slaves()
@@ -195,10 +224,19 @@ class Authentication:
                       to=50,
                       tickinterval=5, command=self.change_font_size)
         scale.pack()
+        self.download_files_title = Label(text="Downloads", bg="blue", fg='white',
+                                          width="300", height="2", font=("Calibri", 13))
+        self.download_files_title.pack()
+        self.download_files_success = Label(bg="yellow", fg='black',
+                                            width="300", height="2", font=("Calibri", 13))
+        self.download_files_success.pack()
+        self.download_button = Button(text="Download File", height="2", width="30", command=self.download_file)
+        self.download_button.pack()
         self.material_title = Label(text="List of the best python learning websites", bg="blue", fg='white',
                                     width="300", height="2", font=("Calibri", 13))
         self.material_title.pack()
         Label(text="").pack()
+
         self.link1 = Label(self.authentication_window, text="Google", fg="blue", font=("Calibri", 13), cursor="hand2")
         self.link1.pack()
         self.link1.bind("<Button-1>", lambda e: self.callback("https://www.google.com"))
