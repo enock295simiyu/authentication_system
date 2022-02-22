@@ -1,11 +1,13 @@
 import webbrowser
-from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, HORIZONTAL
+from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, HORIZONTAL, OptionMenu
 
 from database import User
 
 
 class Authentication:
     def __init__(self):
+        self.chosen_color = None
+        self.color_dropdown = None
         self.material_title = None
         self.link5 = None
         self.link4 = None
@@ -31,6 +33,8 @@ class Authentication:
         self.username_entry = None
         self.password_entry = None
         self.user = User(self.username, self.password)
+        self.color_options = ['white', 'yellow', 'lime', 'aqua', 'azure', 'coral', 'cyan', 'cornflowerblue',
+                              'darkorange', 'greenyellow', 'lavenderblush', 'springgreen', 'steelblue']
 
     def create_base_authentication_window(self):
         self.authentication_window.title('Authentication System | Please Choose between login or register')
@@ -167,6 +171,16 @@ class Authentication:
         self.link4.configure(font=('Calibri', val))
         self.link5.configure(font=('Calibri', val))
         self.material_title.configure(font=('Calibri', val))
+        self.color_dropdown.configure(font=('Calibri', val))
+        self.change_color_title.configure(font=('Calibri', val))
+
+    def change_background_color(self, color):
+        self.authentication_window.configure(bg=color)
+        self.link2.configure(bg=color)
+        self.link1.configure(bg=color)
+        self.link3.configure(bg=color)
+        self.link4.configure(bg=color)
+        self.link5.configure(bg=color)
 
     def clear_main_page(self):
         elements = self.authentication_window.pack_slaves()
@@ -202,3 +216,11 @@ class Authentication:
         self.link5 = Label(self.authentication_window, text="Coursera", fg="blue", font=("Calibri", 13), cursor="hand2")
         self.link5.pack()
         self.link5.bind("<Button-1>", lambda e: self.callback("https://www.coursera.org/"))
+        self.change_color_title = Label(text="Change Font Size", bg="blue", fg='white', width="300", height="2",
+                                        font=("Calibri", 13))
+        self.change_color_title.pack()
+        self.chosen_color = StringVar()
+        self.chosen_color.set(self.color_options[0])
+        self.color_dropdown = OptionMenu(self.authentication_window, self.chosen_color, *self.color_options,
+                                         command=self.change_background_color)
+        self.color_dropdown.pack()
