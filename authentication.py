@@ -5,10 +5,19 @@ from tkinter import Tk, Label, Button, Toplevel, StringVar, Entry, END, Scale, H
     VERTICAL, RIGHT, Y, BOTH, Canvas
 
 from database import User
+from zoomwindow import ZoomWindow
 
 
 class Authentication:
     def __init__(self):
+        self.path = None
+        self.image_render_window = None
+        self.logout_screen = None
+        self.field = None
+        self.scale = None
+        self.photo = None
+        self.flag_frame_title = None
+        self.flag_frame = None
         self.remove_input_button = None
         self.add_input_button = None
         self.input_add_frame = None
@@ -37,6 +46,7 @@ class Authentication:
         self.login_screen = None
         self.registration_screen = None
         self.authentication_window = Tk()
+        self.authentication_window.resizable(height=True, width=True)
         self.authentication_window_geometry = '1000x800'
         self.username = None
         self.password = None
@@ -270,8 +280,16 @@ class Authentication:
         self.add_input_button.pack()
         self.remove_input_button = Button(text="Remove Input", height="1", width="30", command=self.romove_input)
         self.remove_input_button.pack()
+        self.zoom_image_button = Button(text="View Zoom Image", height="2", width="60",
+                                          command=self.display_zoom_image)
+        self.zoom_image_button.pack()
         self.input_add_frame = Canvas(self.authentication_window)
         self.input_add_frame.pack(fill=BOTH, expand=1)
+
+    def display_zoom_image(self):
+        self.path = 'download.png'
+        self.image_render_window = Toplevel(self.authentication_window)
+        app = ZoomWindow(self.image_render_window, image_path=self.path)
 
     def add_input(self):
         self.entry = Entry(self.input_add_frame, textvariable=self.username)
